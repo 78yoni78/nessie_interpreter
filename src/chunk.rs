@@ -3,12 +3,26 @@ use std::mem::{transmute_copy, transmute};
 
 use crate::value::*;
 
+
 #[repr(u8)]
 #[derive(Debug, Clone, Copy)]
 pub enum OpCode {
     Nop,
     Constant,
 }
+
+#[repr(C, u8)]
+#[derive(Debug, Clone, Copy)]
+pub enum Instruction {
+    Nop,
+    Constant(u16), 
+}
+
+pub struct Chunk{ 
+    pub code: Vec<u8>, 
+    pub constants: Vec<Value>,
+}
+
 
 impl OpCode {
     pub fn inst_size(self) -> usize {
@@ -19,22 +33,10 @@ impl OpCode {
     }
 }
 
-#[repr(C, u8)]
-#[derive(Debug, Clone, Copy)]
-pub enum Instruction {
-    Nop,
-    Constant(u16), 
-}
-
 impl Instruction {
     fn opcode<'a>(self) -> OpCode {
         unsafe { transmute_copy(&self) }
     }
-}
-
-pub struct Chunk{ 
-    pub code: Vec<u8>, 
-    pub constants: Vec<Value>,
 }
 
 impl Chunk {
