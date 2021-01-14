@@ -13,6 +13,14 @@ pub struct Chunk{
 }
 
 impl Chunk {
+    /// Creates a new empty chunk with no constants 
+    pub fn new() -> Self {
+        Chunk { 
+            code: vec![],
+            constants: vec![],
+        }
+    }
+    
     /// Adds a new constant to the chunk and returns a reference to it
     pub fn add_constant(&mut self, value: Value) -> &Value {
         self.constants.push(value);
