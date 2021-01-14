@@ -1,0 +1,2 @@
+Nop()                   -           No operation
+Constant(indx: i16)     -           Load a constant from the index
