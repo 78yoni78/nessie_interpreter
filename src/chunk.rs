@@ -4,7 +4,23 @@ use crate::value::*;
 #[repr(u8)]
 #[derive(Debug)]
 pub enum OpCode {
-    Nop
+    Nop,
+    Constant,
+}
+
+impl OpCode {
+    pub fn inst_size(self) -> usize {
+        match self {
+            Nop => 1,
+            Constant => 3,
+        }
+    }
+}
+
+#[repr(C, u8)]
+pub enum Instruction {
+    Nop,
+    Constant(u16), 
 }
 
 pub struct Chunk{ 
@@ -25,5 +41,20 @@ impl Chunk {
     pub fn add_constant(& mut self, value: Value) -> usize {
         self.constants.push(value);
         self.constants.len() - 1
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn adds_constants() {
+        let mut chunk = Chunk::new();
+        let two = chunk.add_constant(2.0); 
+        let six = chunk.add_constant(6.0); 
+
+        assert_eq!(chunk.constants[two], 2.0);
+        assert_eq!(chunk.constants[six], 6.0);
     }
 }
