@@ -24,6 +24,12 @@ pub enum Instruction {
     Constant(u16), 
 }
 
+impl Instruction {
+    fn opcode<'a>(self) -> OpCode {
+        unsafe { transmute_copy(&self) }
+    }
+}
+
 pub struct Chunk{ 
     pub code: Vec<u8>, 
     pub constants: Vec<Value>,
