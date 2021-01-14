@@ -11,8 +11,8 @@ pub enum OpCode {
 impl OpCode {
     pub fn inst_size(self) -> u8 {
         match self {
-            Nop => 1,
-            Constant => 3,
+            OpCode::Nop => 1,
+            OpCode::Constant => 3,
         }
     }
 }
