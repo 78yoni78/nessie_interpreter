@@ -18,6 +18,7 @@ impl OpCode {
 }
 
 #[repr(C, u8)]
+#[derive(Debug)]
 pub enum Instruction {
     Nop,
     Constant(u16), 
