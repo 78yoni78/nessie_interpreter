@@ -1,4 +1,4 @@
-use std::vec::Vec;
+use std::{usize, vec::Vec};
 use std::mem::{transmute_copy, transmute};
 
 use crate::value::*;
@@ -18,9 +18,12 @@ pub enum Instruction {
     Constant(u16), 
 }
 
+struct Line { first_byte_offset: usize }
+
 pub struct Chunk{ 
-    pub code: Vec<u8>, 
-    pub constants: Vec<Value>,
+    code: Vec<u8>, 
+    constants: Vec<Value>,
+    lines: Vec<Line>,
 }
 
 
@@ -42,11 +45,16 @@ impl Instruction {
 impl Chunk {
     /// Creates a new empty chunk with no constants 
     pub fn new() -> Self {
+        let first_line = Line { first_byte_offset: 0 };
         Chunk { 
-            code: vec![],
-            constants: vec![],
+            code: Vec::new(),
+            constants: Vec::new(),
+            lines: vec![first_line],
         }
     }
+
+    pub fn code(&self) -> &Vec<u8> { &self.code }
+    pub fn code_mut(&mut self) -> &mut Vec<u8> { &mut self.code }
     
     /// Adds a new constant to the chunk and returns its index
     pub fn add_constant(& mut self, value: Value) -> usize {
@@ -63,6 +71,20 @@ impl Chunk {
             let slice = std::slice::from_raw_parts(ptr, size as usize);
             self.code.extend_from_slice(slice);
         }
+    }
+
+    /// Returns the number of the line the instruction at the offset was in in the original source code (starting at 1)
+    pub fn get_line_number(&self, instruction_offset: usize) -> usize {
+        let mut line_number = 0;
+        while line_number < self.lines.len() && self.lines[line_number].first_byte_offset <= instruction_offset {
+            line_number = line_number + 1;
+        }
+        line_number
+    }
+
+    /// Call once a new line is reached
+    pub fn new_line(&mut self) {
+        self.lines.push(Line { first_byte_offset: self.code.len() })
     }
 }
 

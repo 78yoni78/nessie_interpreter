@@ -2,10 +2,14 @@ mod chunk;
 mod debug;
 mod value;
 
-use std::vec;
 use chunk::*;
 
 fn main() {
-    let chunk = Chunk { code: vec![OpCode::Nop as u8], constants: vec![] };
+    let mut chunk = Chunk::new();
+
+    let six = chunk.add_constant(6.0);
+    chunk.add_instruction(Instruction::Constant(six as u16));
+    chunk.add_instruction(Instruction::Nop);
+    
     debug::disassemble_chunk(&chunk, "test chunk");
 }
