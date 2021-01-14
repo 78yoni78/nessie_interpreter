@@ -51,6 +51,17 @@ impl Chunk {
         self.constants.push(value);
         self.constants.len() - 1
     }
+
+    /// Adds a new instruction to the bytecode
+    pub fn add_instruction(&mut self, inst: Instruction) {
+        let size = inst.opcode().inst_size();
+        unsafe {
+            let inst: &u8 = transmute(&inst);
+            let ptr: *const u8 = inst as *const u8; 
+            let slice = std::slice::from_raw_parts(ptr, size as usize);
+            self.code.extend_from_slice(slice);
+        }
+    }
 }
 
 #[cfg(test)]
@@ -65,5 +76,22 @@ mod tests {
 
         assert_eq!(chunk.constants[two], 2.0);
         assert_eq!(chunk.constants[six], 6.0);
+    }
+
+    #[test]
+    fn adds_instructions() {
+        let mut chunk = Chunk::new();
+
+        let i = chunk.add_constant(12.0) as u16;
+        chunk.add_instruction(Instruction::Nop); 
+        chunk.add_instruction(Instruction::Constant(i)); 
+
+        assert_eq!(chunk.code.len(), 4);
+        assert_eq!(chunk.code[0], OpCode::Nop as u8);
+        assert_eq!(chunk.code[1], OpCode::Constant as u8);
+        assert_eq!(
+            unsafe { *(&chunk.code[2] as *const u8 as *const u16) },
+            i
+        );
     }
 }
