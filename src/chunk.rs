@@ -21,9 +21,9 @@ impl Chunk {
         }
     }
     
-    /// Adds a new constant to the chunk and returns a reference to it
-    pub fn add_constant(&mut self, value: Value) -> &Value {
+    /// Adds a new constant to the chunk and returns its index
+    pub fn add_constant(& mut self, value: Value) -> usize {
         self.constants.push(value);
-        &self.constants.last().unwrap()
+        self.constants.len() - 1
     }
 }
