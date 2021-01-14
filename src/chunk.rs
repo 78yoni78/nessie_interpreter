@@ -2,7 +2,7 @@ use std::vec::Vec;
 use crate::value::*;
 
 #[repr(u8)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum OpCode {
     Nop,
     Constant,
@@ -18,7 +18,7 @@ impl OpCode {
 }
 
 #[repr(C, u8)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum Instruction {
     Nop,
     Constant(u16), 
