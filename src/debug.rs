@@ -16,6 +16,6 @@ fn disassemble_instruction(chunk: &Chunk, offset: &mut usize) {
     //  we must be looking at an instruction inside of chunk.code
     assert!(*offset < chunk.code.len());
     
-    println!("{:0<4} {:?}", offset, *instruction);
+    println!("{:0>4} {:?}", offset, *instruction);
     *offset = *offset + opcode.inst_size();
 }
