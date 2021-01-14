@@ -1,4 +1,6 @@
 use std::vec::Vec;
+use std::mem::{transmute_copy, transmute};
+
 use crate::value::*;
 
 #[repr(u8)]
